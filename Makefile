@@ -2,7 +2,7 @@ init:
 	npm install
 
 lint:
-	pylint -d line-too-long -d bad-whitespace -d invalid-name -d wildcard-import -d broad-except -d global-statement oz
+	pylint -d line-too-long -d bad-whitespace -d invalid-name -d wildcard-import -d broad-except -d global-statement torender
 
 release:
 	git checkout master

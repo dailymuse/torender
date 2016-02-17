@@ -1,4 +1,4 @@
-# http://travis-ci.org/#!/dailymuse/oz
+# http://travis-ci.org/#!/dailymuse/torender
 
 language: python
 install:

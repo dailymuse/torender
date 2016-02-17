@@ -8,20 +8,12 @@ setup(
     description = "A prerender middleware for the tornado web framework",
     author = "Yusuf Simonson",
     author_email = 'yusuf@themuse.com',
-    url = "http://github.com/dailymuse/oz",
+    url = "http://github.com/dailymuse/torender",
     zip_safe = False,
     
     packages = [
         "torender"
     ],
-
-    package_data = {
-        "oz": [
-            "skeleton/*.py",
-            "skeleton/plugin/*.py",
-            "skeleton/plugin/tests/*.py",
-        ]
-    },
 
     install_requires = [
         "tornado>=3.1",
