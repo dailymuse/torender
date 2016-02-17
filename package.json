@@ -1,0 +1,11 @@
+{
+  "name": "torender",
+  "homepage": "https://www.themuse.com",
+  "dependencies": {
+    "prerender": "^4.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dailymuse/torender.git"
+  }
+}
