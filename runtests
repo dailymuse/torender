@@ -1,0 +1,20 @@
+#!/bin/bash
+
+export PRERENDER_NUM_WORKERS=1
+node node_modules/prerender/server.js &
+PRERENDER_PID=$!
+
+# Wait for prerender to start
+# TODO: properly wait until the prerender service is up
+sleep 1
+
+export PRERENDER_HOST=http://localhost:3000
+python -m tornado.test.runtests torender.tests.test_prerender
+EXIT_CODE=$?
+kill $PRERENDER_PID
+
+# TODO: find a way to properly clean up phantomjs workers, which are not
+# killed when the prerender service is killed
+killall phantomjs
+
+exit $EXIT_CODE

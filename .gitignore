@@ -1,0 +1,6 @@
+.tox
+node_modules
+torender.egg-info
+__pycache__
+*.pyc
+*.pyo
