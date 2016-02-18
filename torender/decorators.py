@@ -92,7 +92,7 @@ def prerenderable(method=None, params=None):
 
         fetch_kwargs = {
             "headers": {},
-            "request_timeout": float(self.settings.get("prerender_request_timeout", DEFAULT_REQUEST_TIMEOUT)),
+            "request_timeout": self.settings.get("prerender_request_timeout", DEFAULT_REQUEST_TIMEOUT),
         }
 
         if prerender_token:
