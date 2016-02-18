@@ -17,4 +17,6 @@ kill $PRERENDER_PID
 # killed when the prerender service is killed
 killall phantomjs
 
+echo "Exiting with status code $EXIT_CODE"
+
 exit $EXIT_CODE
