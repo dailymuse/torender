@@ -94,3 +94,12 @@ class UnconfiguredPrerenderableTestCase(_BaseTestCase):
         response = self.request("/no-params?_escaped_fragment_=")
         self.assertEqual(response.code, 200)
         self.assertEqual(response.body, CONTENTS)
+
+class DisabledPrerenderableTestCase(_BaseTestCase):
+    def get_settings(self):
+        return dict(prerender_disabled=True)
+
+    def test_disabled(self):
+        response = self.request("/no-params?_escaped_fragment_=")
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, CONTENTS)

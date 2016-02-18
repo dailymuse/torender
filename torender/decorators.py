@@ -54,6 +54,11 @@ def prerenderable(method=None, params=None):
     @gen.coroutine
     @functools.wraps(method)
     def wrapper(self, *args, **kwargs):
+        # Prerender is disabled - continue to the method
+        if self.settings.get("prerender_disabled", False) == True:
+            method(self, *args, **kwargs)
+            return
+
         # Normal request - continue to the method
         if self.get_argument("_escaped_fragment_", None) == None:
             method(self, *args, **kwargs)

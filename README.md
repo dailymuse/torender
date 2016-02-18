@@ -48,6 +48,9 @@ Using tornado application settings, you can set these parameters:
   [the hosted version of prerender](http://prerender.io/).
 * `prerender_request_timeout` - How long in seconds to wait before giving up
   on a request to prerender. Defaults to 20.
+* `prerender_disabled` - Setting this to true will disable prerendering. This
+  way you can turn off prerender without removing all the uses of the
+  `prerenderable` decorator in code.
 
 Note that you'll need to either set `prerender_host` to point to your
 prerender installation or `prerender_token` to the token given to you by
