@@ -1,7 +1,9 @@
 import torender
 import tornado.testing
 import tornado.web
+import tornado.log
 import os
+import logging
 
 CONTENTS = """
 <body>
@@ -91,6 +93,20 @@ class PrerenderableTestCase(_BaseTestCase):
 
 class UnconfiguredPrerenderableTestCase(_BaseTestCase):
     def test_unconfigured(self):
+        # This should raise a warning when attempting to prerender, but
+        # continue onward to render the normal (non-prerendered) content,
+        # because it's hitting the default host (service.prerender.io) without
+        # a token.
+
+        # If we're using a version of python that supports `assertLogs`, use
+        # it to check for the warning - otherwise just run the code
+        if hasattr(self, "assertLogs"):
+            with self.assertLogs(tornado.log.app_log, logging.WARNING):
+                self.check_unconfigured()
+        else:
+            self.check_unconfigured()
+
+    def check_unconfigured(self):
         response = self.request("/no-params?_escaped_fragment_=")
         self.assertEqual(response.code, 200)
         self.assertEqual(response.body, CONTENTS)
