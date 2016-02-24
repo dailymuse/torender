@@ -72,7 +72,8 @@ def prerenderable(method=None, params=None):
 
         prerender_token = self.settings.get("prerender_token")
         prerender_host = self.settings.get("prerender_host", DEFAULT_PRERENDER_HOST)
-        new_url = "%s/%s://%s%s" % (prerender_host, self.request.protocol, self.request.host, self.request.path)
+        original_protocol = self.request.headers.get("X-Forwarded-Proto", self.request.protocol)
+        new_url = "%s/%s://%s%s" % (prerender_host, original_protocol, self.request.host, self.request.path)
         query_args = self.request.query_arguments
 
         # Sort the query parameters to prevent redundant calls
