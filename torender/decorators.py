@@ -56,17 +56,20 @@ def prerenderable(method=None, params=None):
     def wrapper(self, *args, **kwargs):
         # Prerender is disabled - continue to the method
         if self.settings.get("prerender_disabled", False) == True:
+            log.app_log.debug("PRERENDER: Skipping prerender because prerender_disabled is set to True")
             method(self, *args, **kwargs)
             return
 
         # Normal request - continue to the method
         if self.get_argument("_escaped_fragment_", None) == None:
+            log.app_log.debug("PRERENDER: Skipping prerender because _escaped_fragment_ is not set")
             method(self, *args, **kwargs)
             return
 
         # The request is coming from a PhantomJS client - continue to the
         # method
         if "PhantomJS" in self.request.headers.get("User-Agent", ""):
+            log.app_log.debug("PRERENDER: Skipping prerender because PhantomJS is in the User-Agent")
             method(self, *args, **kwargs)
             return
 
@@ -74,6 +77,8 @@ def prerenderable(method=None, params=None):
         prerender_host = self.settings.get("prerender_host", DEFAULT_PRERENDER_HOST)
         new_url = "%s/%s://%s%s" % (prerender_host, self.request.protocol, self.request.host, self.request.path)
         query_args = self.request.query_arguments
+
+        log.app_log.debug("PRERENDER: Before query parameters have been processed, request url=%s" % new_url)
 
         # Sort the query parameters to prevent redundant calls
         if len(query_args) > 0:
@@ -87,6 +92,8 @@ def prerenderable(method=None, params=None):
             flattened_query_args.sort()
 
             new_url = "%s?%s" % (new_url, urlencode(flattened_query_args))
+
+        log.app_log.debug("PRERENDER: After query parameters have been processed, request url=%s" % new_url)
         
         response = None
 
@@ -102,9 +109,9 @@ def prerenderable(method=None, params=None):
         try:
             response = yield httpclient.AsyncHTTPClient().fetch(new_url, **fetch_kwargs)
         except httpclient.HTTPError:
-            log.app_log.warning("HTTP error when making a request to prerender", exc_info=True)
+            log.app_log.warning("PRERENDER: HTTP error when making a request to prerender", exc_info=True)
         except Exception:
-            log.app_log.error("Error when making a request to prerender", exc_info=True)
+            log.app_log.error("PRERENDER: Error when making a request to prerender", exc_info=True)
         else:
             if response.code == 200:
                 self.finish(response.body)
