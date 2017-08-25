@@ -38,6 +38,12 @@ To whitelist query parameters, use the `params` arg for the decorator:
         def get(self):
             self.write("Hello, world")
 
+Whitelisting a param will also whitelist the array version of that param:
+
+    # whitelists "some_param=", "some_param[]=", "some_param[1]="
+    @torender.prerenderable(params=["some_param"])
+
+
 ## Settings ##
 
 Using tornado application settings, you can set these parameters:

@@ -23,7 +23,7 @@ PRERENDERED_CONTENTS = """
 <h2>Hello from prerender</h2></body></html>
 """.strip().encode("utf8")
 
-ALLOWED_PARAMS = set(["a", "b", "_escaped_fragment_"])
+ALLOWED_PARAMS = set(["a", "b", "a[]", "b[]", "_escaped_fragment_"])
 
 class BaseHandler(tornado.web.RequestHandler):
     def _get(self):
@@ -90,6 +90,12 @@ class PrerenderableTestCase(_BaseTestCase):
         response = self.request("/with-params?_escaped_fragment_=&a=1&b=2&c=3")
         self.assertEqual(response.code, 200)
         self.assertEqual(response.body, PRERENDERED_CONTENTS)
+
+    def test_whitelisted_array_params(self):
+        response = self.request("/with-params?_escaped_fragment_=&a[]=1&a[]=2&b=2&c=3")
+        self.assertEqual(response.code, 200)
+        self.assertEqual(response.body, PRERENDERED_CONTENTS)
+
 
 class UnconfiguredPrerenderableTestCase(_BaseTestCase):
     def test_unconfigured(self):
