@@ -1,6 +1,7 @@
 import tornado.web
 from tornado import httpclient, log, web, gen
 import functools
+import re
 
 try:
     from urllib.parse import urlencode
@@ -12,6 +13,9 @@ DEFAULT_REQUEST_TIMEOUT = 20.0
 
 # Service that provides prerendering functionality
 DEFAULT_PRERENDER_HOST = "http://service.prerender.io"
+
+# Regex used to strip multi-param encoding
+MULTI_PARAM_REGEX = re.compile("\[[0-9]*\]$")
 
 def prerenderable(method=None, params=None):
     """
@@ -81,14 +85,15 @@ def prerenderable(method=None, params=None):
             flattened_query_args = []
 
             for k, v in query_args.items():
-                if whitelisted_params == None or k in whitelisted_params:
+                escaped_param = MULTI_PARAM_REGEX.sub("", k)
+                if whitelisted_params == None or escaped_param in whitelisted_params:
                     for i in v:
                         flattened_query_args.append((k, i))
 
             flattened_query_args.sort()
 
             new_url = "%s?%s" % (new_url, urlencode(flattened_query_args))
-        
+
         response = None
 
         fetch_kwargs = {
