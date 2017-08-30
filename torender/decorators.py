@@ -104,6 +104,10 @@ def prerenderable(method=None, params=None):
         if prerender_token:
             fetch_kwargs["headers"]["X-Prerender-Token"] = prerender_token
 
+        print("\n\nPRERENDER REQUEST\n")
+        print(new_url)
+        print("\n\n")
+
         # Make the request to prerender, and proxy the results
         try:
             response = yield httpclient.AsyncHTTPClient().fetch(new_url, **fetch_kwargs)
