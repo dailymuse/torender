@@ -47,11 +47,17 @@ class PrerenderableWithParamsHandler(BaseHandler):
 
         self._get()
 
+class PrerenderableWithRedirectHandler(tornado.web.RequestHandler):
+    @torender.prerenderable
+    def get(self):
+        self.redirect("/no-params")
+
 class _BaseTestCase(tornado.testing.AsyncHTTPTestCase):
     def get_handlers(self):
         return [
             (r"^/no-params$", PrerenderableWithoutParamsHandler),
             (r"^/with-params$", PrerenderableWithParamsHandler),
+            (r"^/with-redirect$", PrerenderableWithRedirectHandler),
         ]
 
     def get_settings(self):
@@ -95,6 +101,11 @@ class PrerenderableTestCase(_BaseTestCase):
         response = self.request("/with-params?_escaped_fragment_=&a[]=1&a[]=2&b=2&c=3")
         self.assertEqual(response.code, 200)
         self.assertEqual(response.body, PRERENDERED_CONTENTS)
+
+    def test_redirecting(self):
+        response = self.request("/with-redirect", follow_redirects=False)
+        self.assertEqual(response.code, 302)
+        self.assertEqual(response.headers["Location"], "/no-params")
 
 
 class UnconfiguredPrerenderableTestCase(_BaseTestCase):
