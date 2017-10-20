@@ -1,6 +1,8 @@
 # http://travis-ci.org/#!/dailymuse/torender
 
 language: python
+python:
+    - "pypy"
 env:
     - TRAVIS_NODE_VERSION="4" TOXENV=py27-tornado322
     - TRAVIS_NODE_VERSION="4" TOXENV=py27-tornado401

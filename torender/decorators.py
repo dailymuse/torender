@@ -99,6 +99,7 @@ def prerenderable(method=None, params=None):
         fetch_kwargs = {
             "headers": {},
             "request_timeout": self.settings.get("prerender_request_timeout", DEFAULT_REQUEST_TIMEOUT),
+            "follow_redirects": False
         }
 
         if prerender_token:
@@ -107,7 +108,11 @@ def prerenderable(method=None, params=None):
         # Make the request to prerender, and proxy the results
         try:
             response = yield httpclient.AsyncHTTPClient().fetch(new_url, **fetch_kwargs)
-        except httpclient.HTTPError:
+        except httpclient.HTTPError as err:
+            # If we encounter a redirect, pass it through
+            if 300 <= err.response.code <= 399:
+                self.redirect(err.response.headers['Location'], status=err.response.code)
+                return
             log.app_log.warning("HTTP error when making a request to prerender", exc_info=True)
         except Exception:
             log.app_log.error("Error when making a request to prerender", exc_info=True)
