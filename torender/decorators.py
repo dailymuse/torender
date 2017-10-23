@@ -110,7 +110,7 @@ def prerenderable(method=None, params=None):
             response = yield httpclient.AsyncHTTPClient().fetch(new_url, **fetch_kwargs)
         except httpclient.HTTPError as err:
             # If we encounter a redirect, pass it through
-            if 300 <= err.response.code <= 399:
+            if 300 <= err.code <= 399:
                 self.redirect(err.response.headers['Location'], status=err.response.code)
                 return
             log.app_log.warning("HTTP error when making a request to prerender", exc_info=True)
