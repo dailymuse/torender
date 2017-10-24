@@ -17,6 +17,42 @@ DEFAULT_PRERENDER_HOST = "http://service.prerender.io"
 # Regex used to strip multi-param encoding
 MULTI_PARAM_REGEX = re.compile("\[[0-9]*\]$")
 
+# googlebot, yahoo, and bingbot are not in this list because
+  # we support _escaped_fragment_ and want to ensure people aren't
+  # penalized for cloaking.
+crawler_user_agents = {
+    # 'googlebot',
+    # 'yahoo',
+    # 'bingbot',
+    'baiduspider',
+    'facebookexternalhit',
+    'twitterbot',
+    'rogerbot',
+    'linkedinbot',
+    'embedly',
+    'bufferbot',
+    'quora link preview',
+    'showyoubot',
+    'outbrain',
+    'pinterest/0.',
+    'developers.google.com/+/web/snippet',
+    'www.google.com/webmasters/tools/richsnippets',
+    'slackbot',
+    'vkShare',
+    'W3C_Validator',
+    'redditbot',
+    'Applebot',
+    'WhatsApp',
+    'flipboard',
+    'tumblr',
+    'bitlybot',
+    'SkypeUriPreview',
+    'nuzzel',
+    'Discordbot',
+    'Google Page Speed',
+    'Qwantify'
+}
+
 def prerenderable(method=None, params=None):
     """
     Decorate methods with this to allow an endpoint to be prerenderable. This
@@ -64,7 +100,7 @@ def prerenderable(method=None, params=None):
             return
 
         # Normal request - continue to the method
-        if self.get_argument("_escaped_fragment_", None) == None:
+        if self.get_argument("_escaped_fragment_", None) == None and not any(user_agent.lower() in self.request.headers.get("User-Agent", "") for user_agent in crawler_user_agents):
             method(self, *args, **kwargs)
             return
 
