@@ -17,10 +17,11 @@ DEFAULT_PRERENDER_HOST = "http://service.prerender.io"
 # Regex used to strip multi-param encoding
 MULTI_PARAM_REGEX = re.compile("\[[0-9]*\]$")
 
+# taken from https://github.com/prerender/prerender_rails/blob/master/lib/prerender_rails.rb
 # googlebot, yahoo, and bingbot are not in this list because
-  # we support _escaped_fragment_ and want to ensure people aren't
-  # penalized for cloaking.
-crawler_user_agents = {
+# we support _escaped_fragment_ and want to ensure people aren't
+# penalized for cloaking.
+CRAWLER_USER_AGENTS = {
     # 'googlebot',
     # 'yahoo',
     # 'bingbot',
@@ -100,7 +101,7 @@ def prerenderable(method=None, params=None):
             return
 
         # Normal request - continue to the method
-        if self.get_argument("_escaped_fragment_", None) == None and not any(user_agent.lower() in self.request.headers.get("User-Agent", "") for user_agent in crawler_user_agents):
+        if self.get_argument("_escaped_fragment_", None) == None and not any(user_agent.lower() in self.request.headers.get("User-Agent", "") for user_agent in CRAWLER_USER_AGENTS):
             method(self, *args, **kwargs)
             return
 
