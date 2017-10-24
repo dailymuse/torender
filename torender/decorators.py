@@ -21,7 +21,7 @@ MULTI_PARAM_REGEX = re.compile("\[[0-9]*\]$")
 # googlebot, yahoo, and bingbot are not in this list because
 # we support _escaped_fragment_ and want to ensure people aren't
 # penalized for cloaking.
-CRAWLER_USER_AGENTS = {
+CRAWLER_USER_AGENTS = [
     # 'googlebot',
     # 'yahoo',
     # 'bingbot',
@@ -52,7 +52,7 @@ CRAWLER_USER_AGENTS = {
     'Discordbot',
     'Google Page Speed',
     'Qwantify'
-}
+]
 
 def prerenderable(method=None, params=None):
     """
