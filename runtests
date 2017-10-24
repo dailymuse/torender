@@ -9,7 +9,7 @@ PRERENDER_PID=$!
 sleep 2
 
 export PRERENDER_HOST=http://localhost:3000
-python -m tornado.test.runtests torender.tests
+python -m tornado.testing torender.tests
 EXIT_CODE=$?
 kill $PRERENDER_PID
 
