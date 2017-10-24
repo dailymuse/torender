@@ -39,19 +39,19 @@ CRAWLER_USER_AGENTS = [
     'developers.google.com/+/web/snippet',
     'www.google.com/webmasters/tools/richsnippets',
     'slackbot',
-    'vkShare',
-    'W3C_Validator',
+    'vkshare',
+    'w3c_validator',
     'redditbot',
-    'Applebot',
-    'WhatsApp',
+    'applebot',
+    'whatsapp',
     'flipboard',
     'tumblr',
     'bitlybot',
-    'SkypeUriPreview',
+    'skypeuripreview',
     'nuzzel',
-    'Discordbot',
-    'Google Page Speed',
-    'Qwantify'
+    'discordbot',
+    'google page speed',
+    'qwantify'
 ]
 
 def prerenderable(method=None, params=None):
@@ -101,7 +101,8 @@ def prerenderable(method=None, params=None):
             return
 
         # Normal request - continue to the method
-        if self.get_argument("_escaped_fragment_", None) == None and not any(user_agent.lower() in self.request.headers.get("User-Agent", "") for user_agent in CRAWLER_USER_AGENTS):
+        user_agent = self.request.headers.get("User-Agent", "").lower()
+        if self.get_argument("_escaped_fragment_", None) == None and not any(crawler_user_agent in user_agent for crawler_user_agent in CRAWLER_USER_AGENTS):
             method(self, *args, **kwargs)
             return
 
