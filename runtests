@@ -6,10 +6,10 @@ PRERENDER_PID=$!
 
 # Wait for prerender to start
 # TODO: properly wait until the prerender service is up
-sleep 1
+sleep 2
 
 export PRERENDER_HOST=http://localhost:3000
-python -m tornado.test.runtests torender.tests
+python -m tornado.testing torender.tests
 EXIT_CODE=$?
 kill $PRERENDER_PID
 

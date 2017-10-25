@@ -1,16 +1,20 @@
 # http://travis-ci.org/#!/dailymuse/torender
 
 language: python
+matrix:
+  include: 
+  - python: "2.7"
+    env: TOXENV=py27-tornado322,py27-tornado401
+  - python: "3.5"
+    env: TOXENV=py35-tornado322,py35-tornado401
+  - python: "pypy"
+    env: TOXENV=pypy-tornado322,pypy-tornado401
 env:
-    - TRAVIS_NODE_VERSION="4" TOXENV=py27-tornado322
-    - TRAVIS_NODE_VERSION="4" TOXENV=py27-tornado401
-    - TRAVIS_NODE_VERSION="4" TOXENV=py34-tornado322
-    - TRAVIS_NODE_VERSION="4" TOXENV=py34-tornado401
-    - TRAVIS_NODE_VERSION="4" TOXENV=pypy-tornado322
-    - TRAVIS_NODE_VERSION="4" TOXENV=pypy-tornado401
+  global:
+    - TRAVIS_NODE_VERSION="4"
+before_install:
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 install:
-    - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
-    - pip install tox
-    - npm install
-script:
-    - tox
+  - pip install tox
+  - npm install
+script: tox

@@ -17,6 +17,43 @@ DEFAULT_PRERENDER_HOST = "http://service.prerender.io"
 # Regex used to strip multi-param encoding
 MULTI_PARAM_REGEX = re.compile("\[[0-9]*\]$")
 
+# taken from https://github.com/prerender/prerender_rails/blob/master/lib/prerender_rails.rb
+# googlebot, yahoo, and bingbot are not in this list because
+# we support _escaped_fragment_ and want to ensure people aren't
+# penalized for cloaking.
+CRAWLER_USER_AGENTS = [
+    # 'googlebot',
+    # 'yahoo',
+    # 'bingbot',
+    'baiduspider',
+    'facebookexternalhit',
+    'twitterbot',
+    'rogerbot',
+    'linkedinbot',
+    'embedly',
+    'bufferbot',
+    'quora link preview',
+    'showyoubot',
+    'outbrain',
+    'pinterest/0.',
+    'developers.google.com/+/web/snippet',
+    'www.google.com/webmasters/tools/richsnippets',
+    'slackbot',
+    'vkshare',
+    'w3c_validator',
+    'redditbot',
+    'applebot',
+    'whatsapp',
+    'flipboard',
+    'tumblr',
+    'bitlybot',
+    'skypeuripreview',
+    'nuzzel',
+    'discordbot',
+    'google page speed',
+    'qwantify'
+]
+
 def prerenderable(method=None, params=None):
     """
     Decorate methods with this to allow an endpoint to be prerenderable. This
@@ -64,7 +101,8 @@ def prerenderable(method=None, params=None):
             return
 
         # Normal request - continue to the method
-        if self.get_argument("_escaped_fragment_", None) == None:
+        user_agent = self.request.headers.get("User-Agent", "").lower()
+        if self.get_argument("_escaped_fragment_", None) == None and not any(crawler_user_agent in user_agent for crawler_user_agent in CRAWLER_USER_AGENTS):
             method(self, *args, **kwargs)
             return
 
