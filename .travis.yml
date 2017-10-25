@@ -1,16 +1,20 @@
 # http://travis-ci.org/#!/dailymuse/torender
 
 language: python
-python:
-    - "2.7"
-    - "3.4"
-    - "pypy"
+matrix:
+  include: 
+  - python: "2.7"
+    env: TOXENV=py27-tornado322,py27-tornado401
+  - python: "3.5"
+    env: TOXENV=py35-tornado322,py35-tornado401
+  - python: "pypy"
+    env: TOXENV=pypy-tornado322,pypy-tornado401
 env:
-    - TRAVIS_NODE_VERSION="4" TORNADO_VERSION="3.2.2"
-    - TRAVIS_NODE_VERSION="4" TORNADO_VERSION="4.0.1"
+  global:
+    - TRAVIS_NODE_VERSION="4"
 before_install:
-    - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
+  - rm -rf ~/.nvm && git clone https://github.com/creationix/nvm.git ~/.nvm && (cd ~/.nvm && git checkout `git describe --abbrev=0 --tags`) && source ~/.nvm/nvm.sh && nvm install $TRAVIS_NODE_VERSION
 install:
-    - pip install tornado=="$TORNADO_VERSION"
-    - npm install
-script: ./runtests
+  - pip install tox
+  - npm install
+script: tox
